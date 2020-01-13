@@ -1,5 +1,7 @@
 Opgavebeskrivelse:
 
-I dette projekt/opgaveforløb vil jeg beskæftige mig med at udvikle og konstuere en app til android. Appen uvikles i Android Studio og bliver skrevet i Java.
+I dette projekt/opgaveforløb vil jeg beskæftige mig med at udvikle og konstuere en app til android. 
+Appen uvikles i Android Studio og bliver skrevet i Java.
 
-Appen skal gøre brug af data som den får fra et nfc tag, og appen skal derfor kunne læse og skrive herfra/på. Derudover skal appen kunne omregne data'erne på kortet og omregne dem i forhold til nogle SI-enheder så de bliver vist i den SI-enhed som brugeren af appen ønsker. 
+Appen skal gøre brug af data som den får fra et nfc tag, og appen skal derfor kunne læse og skrive herfra/på. 
+Derudover skal appen kunne omregne data'erne på kortet og omregne dem i forhold til nogle SI-enheder så de bliver vist i den SI-enhed som brugeren af appen ønsker. 
