@@ -11,6 +11,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
+
     private float si2local_volume (int volume, float val) {
         if (val == 0.0) {
             return (float) 0.00;
