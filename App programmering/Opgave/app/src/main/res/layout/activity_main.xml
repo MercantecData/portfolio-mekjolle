@@ -7,20 +7,57 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:id="@+id/textView"
-        android:layout_width="115dp"
-        android:layout_height="45dp"
-        android:text="TextView"
-        tools:layout_editor_absoluteX="261dp"
-        tools:layout_editor_absoluteY="97dp" />
+        android:id="@+id/textViewSerialnumber"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="16dp"
+        android:text="Serial number:"
+        android:textColor="#000000"
+        android:textSize="14dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewBusaddress"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="8dp"
+        android:text="Bus address:"
+        android:textColor="#000000"
+        android:textSize="14dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/editTextBusaddress" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/editTextSerialnumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Name"
-        tools:layout_editor_absoluteX="48dp"
-        tools:layout_editor_absoluteY="97dp" />
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="8dp"
+        android:ems="5"
+        android:gravity="center"
+        android:inputType="numberDecimal"
+        android:textAppearance="@style/TextAppearance.AppCompat"
+        android:textColor="#000000"
+        android:textSize="14dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textViewSerialnumber" />
+
+    <EditText
+        android:id="@+id/editTextBusaddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="16dp"
+        android:ems="3"
+        android:gravity="center"
+        android:inputType="numberDecimal"
+        android:textAppearance="@style/TextAppearance.AppCompat"
+        android:textColor="#000000"
+        android:textSize="14dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
 </android.support.constraint.ConstraintLayout>
