@@ -9,6 +9,7 @@ Derudover skal appen kunne omregne data'erne på kortet og omregne dem i forhold 
 - Beregning af SI-enheder frem og tilbage for tid og volume
 - layout af main-skærm med tekstinput felter osv.
 - Popup-activity hvor selve units for SI-enheder skal sendes tilbage til main-activityen (intents)
+- Settings-activity der skal kunne initialisere standart værdier i felterne
 - Gøre sådan at keyboardsene lukkes når der trykkes uden for felterne
 - NFC del læs og skriv til tag med bestemt MIMETYPE osv.
 	- Skriv data til tag i rigtige SI-enheder. Dette inkludere også tomme tags
