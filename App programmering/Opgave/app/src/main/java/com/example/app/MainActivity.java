@@ -12,9 +12,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private float si2local_volume (int volume, float val) {
-        if (val == 0.0) {
-            return (float) 0.00;
-        }
+        //if (val == 0.0) {
+        //    return (float) 0.00;
+        //}
         float f = val;
         switch (volume)
         {
@@ -41,9 +41,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private float volume_2localsi (int volume, float val) {
-        if (val == 0.0) {
-            return (float) 0.00;
-        }
+        //if (val == 0.0) {
+        //    return (float) 0.00;
+        //}
         float f = val;
         switch (volume)
         {
@@ -71,9 +71,9 @@ public class MainActivity extends AppCompatActivity {
 
     private float si2local_time (int time, float val){
 
-        if (val == 0.0) {
-            return (float) 0.00;
-        }
+        //if (val == 0.0) {
+        //    return (float) 0.00;
+        //}
         float f = val;
         switch (time)
         {
@@ -94,10 +94,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private float time_2localsi (int time, float val){
-
-        if (val == 0.0) {
-            return (float) 0.00;
-        }
+        //if (val == 0.0) {
+        //    return (float) 0.00;
+        //}
         float f = val;
         switch (time)
         {
