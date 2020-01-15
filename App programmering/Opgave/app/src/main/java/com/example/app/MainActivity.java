@@ -109,6 +109,10 @@ public class MainActivity extends AppCompatActivity {
         editTextSerialnumber.setKeyListener(null);
         editTextMaxflowrate.setKeyListener(null);
         editTextActualflow.setKeyListener(null);
+
+        editTextMaxflowrate.setText(Float.toString(si2local_time(1, (float) 0.0)));
+
+
     }
 
 
