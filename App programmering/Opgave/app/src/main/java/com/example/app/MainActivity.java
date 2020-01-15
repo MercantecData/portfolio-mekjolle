@@ -1,14 +1,81 @@
 package com.example.app;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MotionEvent;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
+    private TextView TextViewUnit1;
+    private TextView TextViewUnit2;
+    private TextView TextViewUnit3;
+    private TextView TextViewUnit4;
+    private TextView TextViewUnit5;
+    private TextView TextViewHitBox;
+    private Button buttonwrite;
+    private Button buttonread;
+    private EditText editTextMaxflowrate;
+    private EditText editTextBusaddress;
+    private EditText editTextPulseoutput;
+    private EditText editTextCurrentoutput4mA;
+    private EditText editTextCurrentoutput20mA;
+    private EditText editTextSerialnumber;
+    private EditText editTextActualflow;
+    private int TimeUnitIndex = -1;
+    private int VolumeUnitIndex = -1;
+    private int iBus = 0;
+    private float fMax = 0.0f;
+    private float iPulse = 0;
+    private float fCurrent4mA = 0.0f;
+    private float fCurrent20mA = 0.0f;
+    private float fActual = 0.0f;
+    private int startupcounter = 0;
+
     @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (getCurrentFocus() != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+
+            editTextMaxflowrate.clearFocus();
+            editTextPulseoutput.clearFocus();
+            editTextCurrentoutput4mA.clearFocus();
+            editTextCurrentoutput20mA.clearFocus();
+            editTextActualflow.clearFocus();
+            editTextBusaddress.clearFocus();
+            editTextSerialnumber.clearFocus();
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        TextViewUnit1 = (TextView) findViewById(R.id.textViewUnit1);
+        TextViewUnit2 = (TextView) findViewById(R.id.textViewUnit2);
+        TextViewUnit3 = (TextView) findViewById(R.id.textViewUnit3);
+        TextViewUnit4 = (TextView) findViewById(R.id.textviewUnit4);
+        TextViewUnit5 = (TextView) findViewById(R.id.textViewUnit5);
+        TextViewHitBox = (TextView) findViewById(R.id.textViewHitBox);
+        editTextMaxflowrate = (EditText) findViewById(R.id.editTextMaxflowrate);
+        editTextBusaddress = (EditText) findViewById(R.id.editTextBusaddress);
+        editTextPulseoutput = (EditText) findViewById(R.id.editTextPulseoutput);
+        editTextCurrentoutput4mA = (EditText) findViewById(R.id.editTextCurrentoutput4mA);
+        editTextCurrentoutput20mA = (EditText) findViewById(R.id.editTextCurrentoutput20mA);
+        editTextSerialnumber = (EditText) findViewById(R.id.editTextSerialnumber);
+        editTextActualflow = (EditText) findViewById(R.id.editTextActualFlow);
+        buttonwrite = (Button) findViewById(R.id.buttonwrite);
+        buttonread = (Button) findViewById(R.id.buttonread);
+        editTextSerialnumber.setKeyListener(null);
+        editTextMaxflowrate.setKeyListener(null);
+        editTextActualflow.setKeyListener(null);
+
     }
 
     private float si2local_volume (int volume, float val) {
