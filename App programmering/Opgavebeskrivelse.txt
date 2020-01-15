@@ -4,4 +4,11 @@ I dette projekt/opgaveforløb vil jeg beskæftige mig med at udvikle og konstuere 
 Appen uvikles i Android Studio og bliver skrevet i Java.
 
 Appen skal gøre brug af data som den får fra et nfc tag, og appen skal derfor kunne læse og skrive herfra/på. 
-Derudover skal appen kunne omregne data'erne på kortet og omregne dem i forhold til nogle SI-enheder så de bliver vist i den SI-enhed som brugeren af appen ønsker. 
+Derudover skal appen kunne omregne data'erne på kortet og omregne dem i forhold til nogle SI-enheder så de bliver vist i den SI-enhed som brugeren af appen ønsker.
+
+- Beregning af SI-enheder frem og tilbage for tid og volume
+- layout af main-skærm med tekstinput felter osv.
+- Popup-activity hvor selve units for SI-enheder skal sendes tilbage til main-activityen
+- NFC del læs og skriv til tag med bestemt MIMETYPE osv.
+	- Skriv data til tag i rigtige SI-enheder. Dette inkludere også tomme tags
+	- Læs data fra disse tags
