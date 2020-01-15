@@ -3,11 +3,15 @@ package com.example.app;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private float fCurrent20mA = 0.0f;
     private float fActual = 0.0f;
     private int startupcounter = 0;
+    private boolean editflag = false;
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
@@ -76,7 +81,12 @@ public class MainActivity extends AppCompatActivity {
         editTextMaxflowrate.setKeyListener(null);
         editTextActualflow.setKeyListener(null);
 
+        editTextMaxflowrate.setText(Float.toString(si2local_time(1, (float) 0.0)));
+
+
     }
+
+
 
     private float si2local_volume (int volume, float val) {
         //if (val == 0.0) {
