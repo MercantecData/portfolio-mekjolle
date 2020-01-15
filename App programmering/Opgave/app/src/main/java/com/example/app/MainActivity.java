@@ -1,9 +1,14 @@
 package com.example.app;
 
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -40,6 +45,9 @@ public class MainActivity extends AppCompatActivity {
     private float fActual = 0.0f;
     private int startupcounter = 0;
     private boolean editflag = false;
+    IntentFilter[] intentFiltersArray;
+    String [] [] techListsArray;
+    PendingIntent pendingIntent;
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
@@ -57,6 +65,27 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.dispatchTouchEvent(ev);
     }
+
+
+    public boolean onCreateOptionsMenu(Menu manu){
+        getMenuInflater().inflate(R.menu.main, manu);
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item){
+        int id = item.getItemId();
+        if(id==R.id.id_exit) {
+
+            return true;
+        }
+        if(id==R.id.id_setting) {
+
+            Intent intentSettings = new Intent(MainActivity.this,Settings.class);
+            startActivityForResult(intentSettings , 40);
+        }
+        return true;
+    }
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
