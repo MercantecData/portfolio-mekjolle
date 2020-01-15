@@ -1,7 +1,10 @@
 package com.example.app;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MotionEvent;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -23,8 +26,33 @@ public class MainActivity extends AppCompatActivity {
     private EditText editTextCurrentoutput20mA;
     private EditText editTextSerialnumber;
     private EditText editTextActualflow;
+    private int TimeUnitIndex = -1;
+    private int VolumeUnitIndex = -1;
+    private int iBus = 0;
+    private float fMax = 0.0f;
+    private float iPulse = 0;
+    private float fCurrent4mA = 0.0f;
+    private float fCurrent20mA = 0.0f;
+    private float fActual = 0.0f;
+    private int startupcounter = 0;
 
     @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (getCurrentFocus() != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+
+            editTextMaxflowrate.clearFocus();
+            editTextPulseoutput.clearFocus();
+            editTextCurrentoutput4mA.clearFocus();
+            editTextCurrentoutput20mA.clearFocus();
+            editTextActualflow.clearFocus();
+            editTextBusaddress.clearFocus();
+            editTextSerialnumber.clearFocus();
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
