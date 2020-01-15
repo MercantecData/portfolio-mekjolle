@@ -10,13 +10,10 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
-import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,9 +42,6 @@ public class MainActivity extends AppCompatActivity {
     private float fActual = 0.0f;
     private int startupcounter = 0;
     private boolean editflag = false;
-    IntentFilter[] intentFiltersArray;
-    String [] [] techListsArray;
-    PendingIntent pendingIntent;
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
@@ -110,12 +104,7 @@ public class MainActivity extends AppCompatActivity {
         editTextMaxflowrate.setKeyListener(null);
         editTextActualflow.setKeyListener(null);
 
-        editTextMaxflowrate.setText(Float.toString(si2local_time(1, (float) 0.0)));
-
-
     }
-
-
 
     private float si2local_volume (int volume, float val) {
         //if (val == 0.0) {
