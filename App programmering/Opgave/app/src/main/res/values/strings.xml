@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">app</string>
+
+    <string-array name="Volume">
+        <item>ltr</item>
+        <item>hl</item>
+        <item>m³</item>
+        <item>USG</item>
+        <item>UKG</item>
+    </string-array>
+
+    <string-array name="Time">
+        <item>sec</item>
+        <item>min</item>
+        <item>hour</item>
+    </string-array>
+
 </resources>
