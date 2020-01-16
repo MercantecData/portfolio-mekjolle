@@ -4,6 +4,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -84,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        lockScreenOrientation();
 
         TextViewUnit1 = (TextView) findViewById(R.id.textViewUnit1);
         TextViewUnit2 = (TextView) findViewById(R.id.textViewUnit2);
@@ -100,10 +102,21 @@ public class MainActivity extends AppCompatActivity {
         editTextActualflow = (EditText) findViewById(R.id.editTextActualFlow);
         buttonwrite = (Button) findViewById(R.id.buttonwrite);
         buttonread = (Button) findViewById(R.id.buttonread);
+
+        //Gøre felterne ikke klikbare
         editTextSerialnumber.setKeyListener(null);
         editTextMaxflowrate.setKeyListener(null);
         editTextActualflow.setKeyListener(null);
 
+        //Gøre deres underline transparrant
+        editTextSerialnumber.setBackgroundResource(android.R.color.transparent);
+        editTextMaxflowrate.setBackgroundResource(android.R.color.transparent);
+        editTextActualflow.setBackgroundResource(android.R.color.transparent);
+
+    }
+
+    private void lockScreenOrientation() {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     private float si2local_volume (int volume, float val) {
