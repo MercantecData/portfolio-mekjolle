@@ -4,7 +4,10 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.res.Resources;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -15,6 +18,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -60,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.dispatchTouchEvent(ev);
     }
-
 
     public boolean onCreateOptionsMenu(Menu manu){
         getMenuInflater().inflate(R.menu.main, manu);
@@ -117,6 +121,182 @@ public class MainActivity extends AppCompatActivity {
 
     private void lockScreenOrientation() {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 38) {
+            if (resultCode == RESULT_OK) {
+                VolumeUnitIndex = data.getIntExtra("Volume" , 0);
+                TimeUnitIndex = data.getIntExtra("Time" , 0);
+
+            }
+        }
+        if (requestCode == 40) {
+            if (resultCode == RESULT_OK) {
+
+
+                Intent getvalidDataIntent = data;
+
+                float Rightvalue = 0.00f;
+
+                String SerialNumber = data.getStringExtra("SerialNumberData");
+                editTextSerialnumber.setText(SerialNumber);
+
+                Integer getBus = data.getIntExtra("BusAddressData", 0);
+                iBus = getBus;
+                editTextBusaddress.setText(Integer.toString(iBus));
+
+                Float getMax = data.getFloatExtra("MaxFlowData", 0.0f);
+                fMax = getMax;
+                Rightvalue = time_2localsi(TimeUnitIndex, fMax);
+                editTextMaxflowrate.setText(Float.toString(Rightvalue));
+
+                Float getiPulse = data.getFloatExtra("PulseData" , 0.0f);
+                iPulse = getiPulse;
+                editTextPulseoutput.setText(Float.toString(getiPulse));
+
+                Float get4mA = data.getFloatExtra("Current4mAData" , 0.0f);
+                fCurrent4mA = get4mA;
+                Rightvalue = time_2localsi(TimeUnitIndex, fCurrent4mA);
+                editTextCurrentoutput4mA.setText(Float.toString(Rightvalue));
+
+                Float get20mA = data.getFloatExtra("Current20mAData" , 0.0f);
+                fCurrent20mA = get20mA;
+                Rightvalue = time_2localsi(TimeUnitIndex, fCurrent20mA);
+                editTextCurrentoutput20mA.setText(Float.toString(Rightvalue));
+
+                Float getActual = data.getFloatExtra("ActualFlowData" , 0.0f);
+                fActual = getActual;
+                Rightvalue = time_2localsi(TimeUnitIndex, fActual);
+                editTextActualflow.setText(Float.toString(Rightvalue));
+
+
+            }
+
+        }
+    }
+
+
+    public void onPause() {
+        super.onPause();
+
+        SharedPreferences saved_values = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = saved_values.edit();
+        editor.putInt("SaveVolume", VolumeUnitIndex);
+        editor.putInt("SaveTime", TimeUnitIndex);
+        editor.commit();
+    }
+
+    public void onResume() {
+        super.onResume();
+
+        SharedPreferences saved_values = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        if (VolumeUnitIndex == -1) {
+            VolumeUnitIndex = saved_values.getInt("SaveVolume", 0);
+        }
+        if (TimeUnitIndex == -1) {
+            TimeUnitIndex = saved_values.getInt("SaveTime", 0);
+
+        }
+
+        Resources res = getResources();
+        String[] VolumeArray = res.getStringArray(R.array.Volume);
+        String[] TimeArray = res.getStringArray(R.array.Time);
+        TextViewUnit1.setText(VolumeArray[VolumeUnitIndex] + "/" + TimeArray[TimeUnitIndex]);
+        TextViewUnit2.setText("pulses" + "/" + VolumeArray[VolumeUnitIndex]);
+        TextViewUnit3.setText(VolumeArray[VolumeUnitIndex] + "/" + TimeArray[TimeUnitIndex]);
+        TextViewUnit4.setText(VolumeArray[VolumeUnitIndex] + "/" + TimeArray[TimeUnitIndex]);
+        TextViewUnit5.setText(VolumeArray[VolumeUnitIndex] + "/" + TimeArray[TimeUnitIndex]);
+
+        startupcounter ++;
+
+        if (startupcounter > 1) {
+
+            float volume = 0.00f;
+            float time = 0.00f;
+
+            if (TextUtils.isEmpty(editTextMaxflowrate.getText().toString()))
+            {}
+            else
+            {
+                volume = si2local_volume(VolumeUnitIndex, fMax);
+                time = si2local_time(TimeUnitIndex, fMax);
+
+                if (fMax == 0) {
+                    editTextMaxflowrate.setText(Float.toString(0.00f));
+                }
+                else
+                {
+                    editTextMaxflowrate.setText(String.format(Locale.US, "%.2f",(fMax / time) * volume));
+                }
+            }
+
+            if (TextUtils.isEmpty(editTextPulseoutput.getText().toString()))
+            {}
+            else
+            {
+                volume = si2local_volume(VolumeUnitIndex, 1);
+
+                if (iPulse == 0) {
+                    editTextPulseoutput.setText(Float.toString(0.00f));
+                }
+                else
+                {
+                    editTextPulseoutput.setText(String.format(Locale.US, "%.2f",(iPulse / volume)));
+                }
+
+            }
+
+            if (TextUtils.isEmpty(editTextCurrentoutput4mA.getText().toString()))
+            {}
+            else
+            {
+                volume = si2local_volume(VolumeUnitIndex, fCurrent4mA);
+                time = si2local_time(TimeUnitIndex, fCurrent4mA);
+
+                if (fCurrent4mA == 0) {
+                    editTextCurrentoutput4mA.setText(Float.toString(0.00f));
+                }
+                else
+                {
+                    editTextCurrentoutput4mA.setText(String.format(Locale.US, "%.2f",(fCurrent4mA / time) * volume));
+                }
+
+            }
+
+            if (TextUtils.isEmpty(editTextCurrentoutput20mA.getText().toString()))
+            {}
+            else {
+                volume = si2local_volume(VolumeUnitIndex, fCurrent20mA);
+                time = si2local_time(TimeUnitIndex, fCurrent20mA);
+
+                if (fCurrent20mA == 0) {
+                    editTextCurrentoutput20mA.setText(Float.toString(0.00f));
+                }
+                else
+                {
+                    editTextCurrentoutput20mA.setText(String.format(Locale.US, "%.2f",(fCurrent20mA / time) * volume));
+                }
+            }
+
+            if (TextUtils.isEmpty(editTextActualflow.getText().toString()))
+            {}
+            else {
+                volume = si2local_volume(VolumeUnitIndex, fActual);
+                time = si2local_time(TimeUnitIndex, fActual);
+
+                if (fActual == 0)
+                {
+                    editTextActualflow.setText(Float.toString(0.00f));
+                }
+                else
+                {
+                    editTextActualflow.setText(String.format(Locale.US,"%.2f" , (fActual / time) * volume));
+                }
+            }
+        }
     }
 
     private float si2local_volume (int volume, float val) {
