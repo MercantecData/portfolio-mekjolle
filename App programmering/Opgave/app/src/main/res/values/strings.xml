@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">app</string>
+    <string name="app_name">Volume and time configuration</string>
 
     <string-array name="Volume">
         <item>ltr</item>

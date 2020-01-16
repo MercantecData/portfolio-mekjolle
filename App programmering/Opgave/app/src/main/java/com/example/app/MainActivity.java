@@ -92,21 +92,21 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         lockScreenOrientation();
 
-        TextViewUnit1 = (TextView) findViewById(R.id.textViewUnit1);
-        TextViewUnit2 = (TextView) findViewById(R.id.textViewUnit2);
-        TextViewUnit3 = (TextView) findViewById(R.id.textViewUnit3);
-        TextViewUnit4 = (TextView) findViewById(R.id.textviewUnit4);
-        TextViewUnit5 = (TextView) findViewById(R.id.textViewUnit5);
-        TextViewHitBox = (TextView) findViewById(R.id.textViewHitBox);
-        editTextMaxflowrate = (EditText) findViewById(R.id.editTextMaxflowrate);
-        editTextBusaddress = (EditText) findViewById(R.id.editTextBusaddress);
-        editTextPulseoutput = (EditText) findViewById(R.id.editTextPulseoutput);
-        editTextCurrentoutput4mA = (EditText) findViewById(R.id.editTextCurrentoutput4mA);
-        editTextCurrentoutput20mA = (EditText) findViewById(R.id.editTextCurrentoutput20mA);
-        editTextSerialnumber = (EditText) findViewById(R.id.editTextSerialnumber);
-        editTextActualflow = (EditText) findViewById(R.id.editTextActualFlow);
-        buttonwrite = (Button) findViewById(R.id.buttonwrite);
-        buttonread = (Button) findViewById(R.id.buttonread);
+        TextViewUnit1 = findViewById(R.id.textViewUnit1);
+        TextViewUnit2 = findViewById(R.id.textViewUnit2);
+        TextViewUnit3 = findViewById(R.id.textViewUnit3);
+        TextViewUnit4 = findViewById(R.id.textviewUnit4);
+        TextViewUnit5 = findViewById(R.id.textViewUnit5);
+        TextViewHitBox = findViewById(R.id.textViewHitBox);
+        editTextMaxflowrate = findViewById(R.id.editTextMaxflowrate);
+        editTextBusaddress = findViewById(R.id.editTextBusaddress);
+        editTextPulseoutput = findViewById(R.id.editTextPulseoutput);
+        editTextCurrentoutput4mA = findViewById(R.id.editTextCurrentoutput4mA);
+        editTextCurrentoutput20mA = findViewById(R.id.editTextCurrentoutput20mA);
+        editTextSerialnumber = findViewById(R.id.editTextSerialnumber);
+        editTextActualflow = findViewById(R.id.editTextActualFlow);
+        buttonwrite = findViewById(R.id.buttonwrite);
+        buttonread = findViewById(R.id.buttonread);
 
         //Gøre felterne ikke klikbare
         editTextSerialnumber.setKeyListener(null);
@@ -118,12 +118,24 @@ public class MainActivity extends AppCompatActivity {
         editTextMaxflowrate.setBackgroundResource(android.R.color.transparent);
         editTextActualflow.setBackgroundResource(android.R.color.transparent);
 
+        TextViewHitBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (editflag) {
+                    return;
+                }
+                Intent popup = new Intent(MainActivity.this, Popup.class);
+                popup.putExtra("Volume", VolumeUnitIndex);
+                popup.putExtra("Time", TimeUnitIndex);
+                startActivityForResult(popup, 38);
+            }
+        });
+
     }
 
     private void lockScreenOrientation() {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -136,8 +148,6 @@ public class MainActivity extends AppCompatActivity {
         }
         if (requestCode == 40) {
             if (resultCode == RESULT_OK) {
-
-
                 Intent getvalidDataIntent = data;
 
                 float Rightvalue = 0.00f;
@@ -172,10 +182,7 @@ public class MainActivity extends AppCompatActivity {
                 fActual = getActual;
                 Rightvalue = time_2localsi(TimeUnitIndex, fActual);
                 editTextActualflow.setText(Float.toString(Rightvalue));
-
-
             }
-
         }
     }
 
