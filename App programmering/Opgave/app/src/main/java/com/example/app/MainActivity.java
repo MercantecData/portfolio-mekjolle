@@ -62,21 +62,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        TextViewUnit1 = (TextView) findViewById(R.id.textViewUnit1);
-        TextViewUnit2 = (TextView) findViewById(R.id.textViewUnit2);
-        TextViewUnit3 = (TextView) findViewById(R.id.textViewUnit3);
-        TextViewUnit4 = (TextView) findViewById(R.id.textviewUnit4);
-        TextViewUnit5 = (TextView) findViewById(R.id.textViewUnit5);
-        TextViewHitBox = (TextView) findViewById(R.id.textViewHitBox);
-        editTextMaxflowrate = (EditText) findViewById(R.id.editTextMaxflowrate);
-        editTextBusaddress = (EditText) findViewById(R.id.editTextBusaddress);
-        editTextPulseoutput = (EditText) findViewById(R.id.editTextPulseoutput);
-        editTextCurrentoutput4mA = (EditText) findViewById(R.id.editTextCurrentoutput4mA);
-        editTextCurrentoutput20mA = (EditText) findViewById(R.id.editTextCurrentoutput20mA);
-        editTextSerialnumber = (EditText) findViewById(R.id.editTextSerialnumber);
-        editTextActualflow = (EditText) findViewById(R.id.editTextActualFlow);
-        buttonwrite = (Button) findViewById(R.id.buttonwrite);
-        buttonread = (Button) findViewById(R.id.buttonread);
         editTextSerialnumber.setKeyListener(null);
         editTextMaxflowrate.setKeyListener(null);
         editTextActualflow.setKeyListener(null);
