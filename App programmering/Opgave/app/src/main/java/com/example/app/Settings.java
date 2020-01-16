@@ -22,8 +22,6 @@ public class Settings extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
         lockScreenOrientation();
 
-        SerialNumber = (EditText) findViewById(R.id.editTextSerialnumberSettings);
-        ButtonInitialize = (Button) findViewById(R.id.buttonInitialize);
         ButtonInitialize.setOnClickListener(ConvertListener);
 
     }
