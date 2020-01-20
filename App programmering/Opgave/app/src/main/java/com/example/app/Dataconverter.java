@@ -89,5 +89,11 @@ public class Dataconverter {
         int int_1_a = ByteBuffer.wrap(int_1_s).getInt();
         return int_1_a;
     }
+
+    public static void byteToMsg (byte b, byte [] convert, int offset) {
+        byte[] intOut = ByteBuffer.allocate(1).put(b).array();
+        convert[offset] = intOut[0];
+    }
+
 }
 
