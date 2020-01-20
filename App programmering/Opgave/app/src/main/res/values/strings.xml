@@ -1,6 +1,18 @@
 <resources>
     <string name="app_name">app</string>
 
+    <string name="app_text">Flow meter configuration</string>
+    <string name="max_flow">Max flow rate:</string>
+    <string name="pulse_output">Pulse output:</string>
+    <string name="current_text">Current output</string>
+    <string name="current_4mA">4 mA:</string>
+    <string name="current_20mA">20 mA:</string>
+    <string name="actual_flow">Actual flow:</string>
+    <string name="button_read">Read</string>
+    <string name="button_write">Write</string>
+    <string name="serial_number">Serial number:</string>
+    <string name="bus_address">Bus address:</string>
+
     <string-array name="Volume">
         <item>ltr</item>
         <item>hl</item>
