@@ -95,5 +95,36 @@ public class Dataconverter {
         convert[offset] = intOut[0];
     }
 
+    public static void shortToMsg(short i, byte [] msg, int offset)
+    {
+        byte[] short_out = ByteBuffer.allocate(2).putShort(i).array(); //2 = size of i
+        if (ByteOrder.nativeOrder() == ByteOrder.BIG_ENDIAN) {
+            msg[offset + 0] = short_out[1];
+            msg[offset + 1] = short_out[0];
+        }
+        else
+        {
+            msg[offset + 0] = short_out[0];
+            msg[offset + 1] = short_out[1];
+        }
+    }
+
+    public static short msgToShort(byte [] msg, int offset)
+    {
+        byte[] short_1 = new byte[2];
+        ByteBuffer.wrap(msg, offset, 2).get( short_1);
+        byte[] short_1_s = new byte[2];
+        if (ByteOrder.nativeOrder() == ByteOrder.BIG_ENDIAN) {
+            short_1_s[0] = short_1 [1];
+            short_1_s[1] = short_1 [0];
+        }
+        else
+        {
+            short_1_s[0] = short_1 [0];
+            short_1_s[1] = short_1 [1];
+        }
+        short short_1_a = ByteBuffer.wrap(short_1_s).getShort();
+        return short_1_a;
+    }
 }
 
