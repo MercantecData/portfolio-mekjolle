@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">Volume and time configuration</string>
 
+    <string name="unit_text">Unit Selection</string>
+    <string name="volume_text">Volume Unit:</string>
+    <string name="time_text">Time Unit:</string>
+
+
     <string-array name="Volume">
         <item>ltr</item>
         <item>hl</item>
