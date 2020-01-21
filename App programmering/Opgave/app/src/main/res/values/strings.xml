@@ -6,6 +6,10 @@
     <string name="time_text">Time Unit:</string>
 
 
+    <string name="settings_text">Debug View:</string>
+    <string name="serial_text">Serial number:</string>
+    <string name="Initialize_text">Initialize Tag</string>
+ 
     <string name="app_text">Flow meter configuration</string>
     <string name="max_flow">Max flow rate:</string>
     <string name="pulse_output">Pulse output:</string>

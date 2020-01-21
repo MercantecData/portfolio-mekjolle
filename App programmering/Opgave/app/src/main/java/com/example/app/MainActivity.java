@@ -130,12 +130,28 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(popup, 38);
             }
         });
-
+      
+        buttonwrite.setOnClickListener(writeListener);
+        buttonread.setOnClickListener(readListener);
     }
 
     private void lockScreenOrientation() {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
+  
+    private View.OnClickListener writeListener = new View.OnClickListener() {
+        public void onClick(View v) {
+
+
+        }
+    };
+
+    private View.OnClickListener readListener = new View.OnClickListener() {
+        public void onClick(View v) {
+
+
+        }
+    };
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
