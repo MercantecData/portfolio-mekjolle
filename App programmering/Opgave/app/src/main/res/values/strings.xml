@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">app</string>
 
+    <string name="settings_text">Debug View:</string>
+    <string name="serial_text">Serial number:</string>
+    <string name="Initialize_text">Initialize Tag</string>
+
     <string-array name="Volume">
         <item>ltr</item>
         <item>hl</item>
