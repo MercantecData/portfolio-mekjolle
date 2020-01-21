@@ -1,5 +1,10 @@
 <resources>
-    <string name="app_name">app</string>
+    <string name="app_name">Volume and time configuration</string>
+
+    <string name="unit_text">Unit Selection</string>
+    <string name="volume_text">Volume Unit:</string>
+    <string name="time_text">Time Unit:</string>
+
 
     <string name="settings_text">Debug View:</string>
     <string name="serial_text">Serial number:</string>
