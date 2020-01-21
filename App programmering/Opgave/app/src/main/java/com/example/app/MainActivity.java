@@ -118,11 +118,27 @@ public class MainActivity extends AppCompatActivity {
         editTextMaxflowrate.setBackgroundResource(android.R.color.transparent);
         editTextActualflow.setBackgroundResource(android.R.color.transparent);
 
+        buttonwrite.setOnClickListener(writeListener);
+        buttonread.setOnClickListener(readListener);
     }
 
     private void lockScreenOrientation() {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
+
+    private View.OnClickListener writeListener = new View.OnClickListener() {
+        public void onClick(View v) {
+
+
+        }
+    };
+
+    private View.OnClickListener readListener = new View.OnClickListener() {
+        public void onClick(View v) {
+
+
+        }
+    };
 
 
     @Override
