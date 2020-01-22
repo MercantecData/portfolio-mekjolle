@@ -3,11 +3,14 @@ package com.example.app;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 public class Settings extends AppCompatActivity {
@@ -15,7 +18,9 @@ public class Settings extends AppCompatActivity {
     public static final String MIME_VIGO6 = "application/x.proces-data.vigo6_nfc";
     private boolean convert = false;
     private Button ButtonInitialize;
+    private ImageView SelectTheme;
     private EditText SerialNumber;
+    private Boolean isday = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +31,16 @@ public class Settings extends AppCompatActivity {
         SerialNumber = findViewById(R.id.editTextSerialnumberSettings);
         ButtonInitialize = findViewById(R.id.buttonInitialize);
         ButtonInitialize.setOnClickListener(ConvertListener);
+        SelectTheme = findViewById(R.id.selecttheme);
+        SelectTheme.setOnClickListener(SelectListner);
 
+        if (isday == true) {
+            SelectTheme.setImageResource(R.drawable.dag);
+            isday = true;
+        } else {
+            SelectTheme.setImageResource(R.drawable.nat);
+            isday = false;
+        }
     }
 
 
@@ -53,6 +67,21 @@ public class Settings extends AppCompatActivity {
                 Toast.makeText(Settings.this, "The Serial Number must contain exactly 8 characters!", Toast.LENGTH_LONG).show();
             }
 
+        }
+    };
+
+    private View.OnClickListener SelectListner = new View.OnClickListener() {
+        public void onClick(View v) {
+
+            if (isday == true) {
+                SelectTheme.setImageResource(R.drawable.nat);
+                isday = false;
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            } else {
+                SelectTheme.setImageResource(R.drawable.dag);
+                isday = true;
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            }
         }
     };
 
