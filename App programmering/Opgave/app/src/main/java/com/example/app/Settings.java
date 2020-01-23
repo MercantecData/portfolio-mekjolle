@@ -3,11 +3,14 @@ package com.example.app;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 public class Settings extends AppCompatActivity {
@@ -26,7 +29,6 @@ public class Settings extends AppCompatActivity {
         SerialNumber = findViewById(R.id.editTextSerialnumberSettings);
         ButtonInitialize = findViewById(R.id.buttonInitialize);
         ButtonInitialize.setOnClickListener(ConvertListener);
-
     }
 
 
@@ -55,6 +57,7 @@ public class Settings extends AppCompatActivity {
 
         }
     };
+
 
     private void lockScreenOrientation() {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);

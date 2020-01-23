@@ -1,12 +1,19 @@
 package com.example.app;
 
-import android.app.PendingIntent;
+
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
+import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
+import android.nfc.NfcAdapter;
+import android.nfc.Tag;
+import android.nfc.tech.MifareUltralight;
+import android.nfc.tech.Ndef;
+import android.nfc.tech.NdefFormatable;
+import android.nfc.tech.NfcF;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,7 +26,14 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
+import android.widget.Toast;
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.IntentFilter.MalformedMimeTypeException;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.text.AttributedString;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
@@ -48,6 +62,15 @@ public class MainActivity extends AppCompatActivity {
     private float fCurrent20mA = 0.0f;
     private float fActual = 0.0f;
     private int startupcounter = 0;
+    NfcAdapter nfcAdapter;
+    private boolean nfcwriteenable = false;
+    private boolean nfcreadenable = false;
+    IntentFilter[] intentFiltersArray;
+    String [] [] techListsArray;
+    PendingIntent pendingIntent;
+    public static final String MIME_VIGO6 = "application/x.proces-data.vigo6_nfc";
+    private int ikkeaktivfarve = 0xc6918b8b;
+    private int aktivfarve = 0xc672c127;
     private boolean editflag = false;
 
     @Override
@@ -87,6 +110,140 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public void handleIntent(Intent intent) {
+        String action = intent.getAction();
+        byte[] payloadout = new byte[0];
+        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {
+
+            if (nfcAdapter != null && nfcAdapter.isEnabled() && !nfcwriteenable && !nfcreadenable) {
+                Toast.makeText(this, "NFC available!", Toast.LENGTH_SHORT).show();
+            } else {
+                if (nfcreadenable) {
+                    Toast.makeText(this, "NFC data read!", Toast.LENGTH_LONG).show();
+                }
+                if (nfcwriteenable)
+                {
+                    Toast.makeText(this, "NFC data written!", Toast.LENGTH_LONG).show();
+                }
+            }
+
+
+            if (nfcreadenable && !nfcwriteenable) {
+                if (intent.getType() != null && intent.getType().equals(MIME_VIGO6)) {
+                    // Read the first record which contains the NFC data
+                    Parcelable[] rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
+                    NdefRecord relayRecord = ((NdefMessage) rawMsgs[0]).getRecords()[0];
+                    byte[] payload = relayRecord.getPayload();
+
+                    short stringLenght = Dataconverter.msgToShort(payload, 28);
+
+                    ByteBuffer stringbuffer = ByteBuffer.wrap(payload, 30, stringLenght);
+                    byte[] tmp = new byte[stringLenght];
+                    stringbuffer.get(tmp);
+                    String serialNumber = new String(tmp);
+
+                    iBus = payload[50]; //to do "range"
+                    fMax = Dataconverter.msgToFloat(payload, 52);
+                    iPulse = Dataconverter.msgToFloat(payload, 56);
+                    fCurrent4mA = Dataconverter.msgToFloat(payload, 60);
+                    fCurrent20mA = Dataconverter.msgToFloat(payload, 64);
+                    fActual = Dataconverter.msgToFloat(payload, 68);
+
+                    try {
+                        editTextSerialnumber.setText(serialNumber);
+                        editTextBusaddress.setText(Integer.toString(iBus));
+                        editTextMaxflowrate.setText(String.format(Locale.US, "%.2f" ,fMax));
+                        editTextPulseoutput.setText(String.format(Locale.US, "%.2f" ,iPulse));
+                        editTextCurrentoutput4mA.setText(String.format(Locale.US, "%.2f" ,fCurrent4mA));
+                        editTextCurrentoutput20mA.setText(String.format(Locale.US, "%.2f" , fCurrent20mA));
+                        editTextActualflow.setText(String.format(Locale.US, "%.2f", (fActual)));
+                    } catch (Exception e) {
+                    }
+                    nfcreadenable = false;
+                    nfcwriteenable = false;
+                    buttonread.setBackgroundColor(ikkeaktivfarve);
+                }
+            }
+        }
+        if (nfcwriteenable) {
+            Tag tagFromIntent = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+
+            byte[] convertinformations = new  byte[296];
+
+            String GUIDstr = new String("PD_18232-03");
+            Dataconverter.shortToMsg((short)GUIDstr.length(), convertinformations, 0);
+            ByteBuffer.wrap(convertinformations, 2 , GUIDstr.length()).put(GUIDstr.getBytes());
+
+
+            Dataconverter.shortToMsg((short)editTextSerialnumber.getText().length(), convertinformations, 28);
+            ByteBuffer.wrap(convertinformations, 30 , editTextSerialnumber.getText().length()).put(editTextSerialnumber.getText().toString().getBytes());
+            Dataconverter.byteToMsg(Byte.parseByte(editTextBusaddress.getText().toString()), convertinformations, 50);
+            Dataconverter.floatToMsg(fMax, convertinformations, 52);
+            Dataconverter.floatToMsg(iPulse, convertinformations, 56);
+            Dataconverter.floatToMsg(fCurrent4mA, convertinformations, 60);
+            Dataconverter.floatToMsg(fCurrent20mA, convertinformations, 64);
+            Dataconverter.floatToMsg(fActual, convertinformations, 68);
+
+            NdefMessage msg = new NdefMessage(new NdefRecord[] {createMimeRecord(MIME_VIGO6, convertinformations)});
+            writeTag(tagFromIntent, msg);
+            nfcwriteenable = false;
+            nfcreadenable = false;
+            buttonwrite.setBackgroundColor(ikkeaktivfarve);
+        }
+
+    }
+
+    private NdefRecord createMimeRecord(String mimeType, byte[] payload) {
+        byte[] mimeBytes = mimeType.getBytes(Charset.forName("UTF-8"));
+        NdefRecord mimeRecord = new
+                NdefRecord(NdefRecord.TNF_MIME_MEDIA,
+                mimeBytes, new byte[0], payload);
+        return mimeRecord;
+    }
+    private void intentfiltersetup(){
+        IntentFilter ndef = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
+        try {
+            ndef.addDataType(MIME_VIGO6);  /* Handles all MIME based dispatches.
+                                       You should specify only the ones that you need. */
+        }
+        catch (IntentFilter.MalformedMimeTypeException e) {
+            throw new RuntimeException("fail", e);
+        }
+
+        IntentFilter emptytag = new IntentFilter(NfcAdapter.ACTION_TECH_DISCOVERED);
+
+        intentFiltersArray = new IntentFilter[] {ndef, emptytag, };
+
+        techListsArray = new String[][] { new String[] { NfcF.class.getName() }, new String[] {MifareUltralight.class.getName()} };
+
+    }
+
+    public void writeTag(Tag tag, NdefMessage message)  {
+        if (tag != null) {
+            try {
+                Ndef ndefTag = Ndef.get(tag);
+                if (ndefTag == null) {
+                    // Let's try to format the Tag in NDEF
+                    NdefFormatable nForm = NdefFormatable.get(tag);
+                    if (nForm != null) {
+                        nForm.connect();
+                        nForm.format(message);
+                        nForm.close();
+                    }
+                }
+                else {
+                    ndefTag.connect();
+
+                    ndefTag.writeNdefMessage(message);
+                    ndefTag.close();
+                }
+            }
+            catch(Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -118,6 +275,12 @@ public class MainActivity extends AppCompatActivity {
         editTextMaxflowrate.setBackgroundResource(android.R.color.transparent);
         editTextActualflow.setBackgroundResource(android.R.color.transparent);
 
+        pendingIntent = PendingIntent.getActivity(
+                this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        intentfiltersetup();
+
         TextViewHitBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -130,18 +293,294 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(popup, 38);
             }
         });
-      
+
+        editTextMaxflowrate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    float volume = 0.0f;
+                    float time = 0.0f;
+
+                    if(TextUtils.isEmpty(editTextMaxflowrate.getText().toString()))
+                    {
+                        fMax = 0.0f;
+                    }
+                    else
+                    {
+                        float local = Float.parseFloat(editTextMaxflowrate.getText().toString());
+
+                        if (local == 0)
+                        {
+                            fMax = 0.0f;
+                        }
+                        else
+                        {
+                            volume = volume_2localsi(VolumeUnitIndex, local);
+                            time = time_2localsi(TimeUnitIndex, local);
+
+                            fMax = local * (volume / time);
+                        }
+                    }
+                    new java.util.Timer().schedule(
+                            new java.util.TimerTask() {
+                                @Override
+                                public void run() {
+                                    editflag = false;
+                                }
+                            },
+                            200
+                    );
+                } else {
+                    editflag = true;
+                }
+                editTextMaxflowrate.clearFocus();
+                onResume();
+            }
+        });
+
+        editTextPulseoutput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    float volume = 0.0f;
+
+                    if (TextUtils.isEmpty(editTextPulseoutput.getText().toString())) {
+                        Toast.makeText(MainActivity.this, "Provide valid data to field before writing", Toast.LENGTH_LONG).show();
+                        iPulse = 0;
+                    } else {
+                        float local = Float.parseFloat(editTextPulseoutput.getText().toString());
+
+                        if (local == 0) {
+                            iPulse = 0;
+                        } else {
+                            volume = volume_2localsi(VolumeUnitIndex, 1);
+
+                            iPulse = (local / volume);
+
+                        }
+                    }
+                    new java.util.Timer().schedule(
+                            new java.util.TimerTask() {
+                                @Override
+                                public void run() {
+                                    editflag = false;
+                                }
+                            },
+                            200
+                    );
+                } else {
+                    editflag = true;
+                }
+                onResume();
+            }
+        });
+        editTextCurrentoutput4mA.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    float volume = 0.0f;
+                    float time = 0.0f;
+
+                    if (TextUtils.isEmpty(editTextCurrentoutput4mA.getText().toString()))
+                    {
+                        Toast.makeText(MainActivity.this, "Provide valid data to field before writing", Toast.LENGTH_LONG).show();
+                        fCurrent4mA = 0.0f;
+                    }
+                    else
+                    {
+                        float local = Float.parseFloat(editTextCurrentoutput4mA.getText().toString());
+
+                        if (local == 0)
+                        {
+                            fCurrent4mA = 0.0f;
+                        }
+                        else
+                        {
+                            volume = volume_2localsi(VolumeUnitIndex, local);
+                            time = time_2localsi(TimeUnitIndex, local);
+
+                            fCurrent4mA = local * (volume / time);
+                        }
+                    }
+                    new java.util.Timer().schedule(
+                            new java.util.TimerTask() {
+                                @Override
+                                public void run() {
+                                    editflag = false;
+                                }
+                            },
+                            200
+                    );
+                } else {
+                    editflag = true;
+                }
+                onResume();
+            }
+        });
+        editTextCurrentoutput20mA.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    float volume = 0.0f;
+                    float time = 0.0f;
+
+                    if(TextUtils.isEmpty(editTextCurrentoutput20mA.getText().toString()))
+                    {
+                        Toast.makeText(MainActivity.this, "Provide valid data to field before writing", Toast.LENGTH_LONG).show();
+                        fCurrent20mA = 0.0f;
+                    }
+                    else
+                    {
+                        float local = Float.parseFloat(editTextCurrentoutput20mA.getText().toString());
+
+                        if (local == 0)
+                        {
+                            fCurrent20mA = 0.0f;
+                        }
+                        else {
+                            volume = volume_2localsi(VolumeUnitIndex, local);
+                            time = time_2localsi(TimeUnitIndex, local);
+                            fCurrent20mA = local * (volume / time);
+                        }
+                    }
+                    new java.util.Timer().schedule(
+                            new java.util.TimerTask() {
+                                @Override
+                                public void run() {
+                                    editflag = false;
+                                }
+                            },
+                            200
+                    );
+                } else {
+                    editflag = true;
+                }
+                onResume();
+            }
+        });
+
+        editTextActualflow.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+
+                    float volume = 0.0f;
+                    float time = 0.0f;
+
+                    if(TextUtils.isEmpty(editTextActualflow.getText().toString()))
+                    {
+                        fActual = 0.0f;
+                    }
+                    else
+                    {
+                        float local = Float.parseFloat(editTextActualflow.getText().toString());
+
+                        if (local == 0)
+                        {
+                            fActual = 0.0f;
+                        }
+                        else
+                        {
+                            volume = volume_2localsi(VolumeUnitIndex, local);
+                            time = time_2localsi(TimeUnitIndex, local);
+
+                            fActual = local * (volume / time);
+                        }
+                    }
+                    new java.util.Timer().schedule(
+                            new java.util.TimerTask() {
+                                @Override
+                                public void run() {
+                                    editflag = false;
+                                }
+                            },
+                            200
+                    );
+                } else {
+                    editflag = true;
+                }
+                editTextActualflow.clearFocus();
+                onResume();
+            }
+        });
+
+        editTextBusaddress.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    if(TextUtils.isEmpty(editTextBusaddress.getText().toString()))
+                    {
+                        Toast.makeText(MainActivity.this, "Provide valid data to field before writing", Toast.LENGTH_LONG).show();
+                        iBus = 0;
+                    }
+
+                    new java.util.Timer().schedule(
+                            new java.util.TimerTask() {
+                                @Override
+                                public void run() {
+                                    editflag = false;
+                                }
+                            },
+                            200
+                    );
+                } else {
+                    editflag = true;
+                }
+            }
+        });
+
+        editTextSerialnumber.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                editTextSerialnumber.clearFocus();
+            }
+        });
+
         buttonwrite.setOnClickListener(writeListener);
         buttonread.setOnClickListener(readListener);
+
     }
 
     private void lockScreenOrientation() {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
-  
     private View.OnClickListener writeListener = new View.OnClickListener() {
         public void onClick(View v) {
 
+            if (!TextUtils.isEmpty(editTextSerialnumber.getText().toString()))
+            {
+                if (!nfcwriteenable)
+                {
+                    if (nfcreadenable)
+                    {
+                        nfcreadenable = false;
+                        buttonread.setBackgroundColor(ikkeaktivfarve);
+                        nfcwriteenable = true;
+                        buttonwrite.setBackgroundColor(aktivfarve);
+                    }
+                    else
+                    {
+                        nfcwriteenable = true;
+                        buttonwrite.setBackgroundColor(aktivfarve);
+                    }
+                }
+                else
+                {
+                    nfcwriteenable = false;
+                    buttonwrite.setBackgroundColor(ikkeaktivfarve);
+                }
+            }
+            else
+            {
+                Toast.makeText(MainActivity.this, "Initialize flow meter before writing!", Toast.LENGTH_LONG).show();
+            }
 
         }
     };
@@ -149,7 +588,25 @@ public class MainActivity extends AppCompatActivity {
     private View.OnClickListener readListener = new View.OnClickListener() {
         public void onClick(View v) {
 
-
+            if (!nfcreadenable) {
+                if (nfcwriteenable)
+                {
+                    nfcwriteenable = false;
+                    buttonwrite.setBackgroundColor(ikkeaktivfarve);
+                    nfcreadenable = true;
+                    buttonread.setBackgroundColor(aktivfarve);
+                }
+                else
+                {
+                    nfcreadenable = true;
+                    buttonread.setBackgroundColor(aktivfarve);
+                }
+            }
+            else
+            {
+                nfcreadenable = false;
+                buttonread.setBackgroundColor(ikkeaktivfarve);
+            }
         }
     };
 
@@ -164,6 +621,8 @@ public class MainActivity extends AppCompatActivity {
         }
         if (requestCode == 40) {
             if (resultCode == RESULT_OK) {
+
+
                 Intent getvalidDataIntent = data;
 
                 float Rightvalue = 0.00f;
@@ -199,12 +658,14 @@ public class MainActivity extends AppCompatActivity {
                 Rightvalue = time_2localsi(TimeUnitIndex, fActual);
                 editTextActualflow.setText(Float.toString(Rightvalue));
             }
+
         }
     }
 
 
     public void onPause() {
         super.onPause();
+        nfcAdapter.disableForegroundDispatch(this);
 
         SharedPreferences saved_values = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor editor = saved_values.edit();
@@ -215,6 +676,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onResume() {
         super.onResume();
+        nfcAdapter.enableForegroundDispatch(this, pendingIntent, intentFiltersArray, techListsArray);
 
         SharedPreferences saved_values = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         if (VolumeUnitIndex == -1) {
@@ -427,4 +889,11 @@ public class MainActivity extends AppCompatActivity {
         }
         return f;
     }
+
+    public void onNewIntent(Intent intent) {
+        //Tag tagFromIntent = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+        //do something with tagFromIntent
+        handleIntent(intent);
+    }
 }
+

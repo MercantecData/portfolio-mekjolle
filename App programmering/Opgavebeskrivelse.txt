@@ -1,17 +1,16 @@
 Opgavebeskrivelse:
 
-I dette projekt/opgaveforløb vil jeg beskæftige mig med at udvikle og konstuere en app til android. 
+I dette projekt/opgaveforlï¿½b vil jeg beskï¿½ftige mig med at udvikle og konstuere en app til android. 
 Appen uvikles i Android Studio og bliver skrevet i Java.
 
-Appen skal gøre brug af data som den får fra et nfc tag, og appen skal derfor kunne læse og skrive herfra/på. 
-Derudover skal appen kunne omregne data'erne på kortet og omregne dem i forhold til nogle SI-enheder så de bliver vist i den SI-enhed som brugeren af appen ønsker.
+Appen skal gï¿½re brug af data som den fï¿½r fra et nfc tag, og appen skal derfor kunne lï¿½se og skrive herfra/pï¿½. 
+Derudover skal appen kunne omregne data'erne pï¿½ kortet og omregne dem i forhold til nogle SI-enheder sï¿½ de bliver vist i den SI-enhed som brugeren af appen ï¿½nsker.
 
-- Beregning af SI-enheder frem og tilbage for tid og volume
-- layout af main-skærm med tekstinput felter osv.
-- Popup-activity hvor selve units for SI-enheder skal sendes tilbage til main-activityen (intents)
-- Settings-activity der skal kunne initialisere standart værdier i felterne
-- Gøre sådan at keyboardsene lukkes når der trykkes uden for felterne
-- Lave en dataconveter der kan omregne de forskellige variable fra og til Big_Endian
-- NFC del læs og skriv til tag med bestemt MIMETYPE osv.
-	- Skriv data til tag i rigtige SI-enheder. Dette inkludere også tomme tags
-	- Læs data fra disse tags
+- Beregning af SI-enheder frem og tilbage for tid og volume - fï¿½rdig
+- layout af main-skï¿½rm med tekstinput felter osv. - fï¿½rdig
+- Popup-activity hvor selve units for SI-enheder skal sendes tilbage til main-activityen (intents) - fï¿½rdig
+- Settings-activity der skal kunne initialisere standart vï¿½rdier i felterne - fï¿½rdig
+- Gï¿½re sï¿½dan at keyboardsene lukkes nï¿½r der trykkes uden for felterne - fï¿½rdig
+- NFC del lï¿½s og skriv til tag med bestemt MIMETYPE osv.
+	- Skriv data til tag i rigtige SI-enheder. Dette inkludere ogsï¿½ tomme tags
+	- Lï¿½s data fra disse tags
